@@ -1,0 +1,142 @@
+#include <iostream>
+#include <cstdio>
+#include <chrono>
+#include <thread>
+#include <SDL.h>
+#include <cmath> // Para el uso de sin y cos
+
+// Estructura para almacenar la posición, tamaño y dirección de las figuras
+struct Shape {
+    int x, y;       // Posición
+    int width, height; // Para el rectángulo
+    int radius;     // Para el círculo
+    double angle;   // Ángulo de rotación
+    Uint8 r, g, b;  // Color
+    int dx, dy;     // Dirección de movimiento
+};
+
+// Inicializar las figuras
+Shape rectangle = { 50, 50, 100, 50, 0, 0, 255, 0, 1, 1 }; // Rectángulo (rojo)
+Shape circle = { 400, 300, 0, 50, 0, 0, 255, 0, 1, 1 }; // Círculo (azul)
+
+// Función para detectar colisión entre dos figuras
+bool CheckCollision(const Shape& a, const Shape& b) {
+    // Colisión simple entre el rectángulo y el círculo
+    bool collisionX = a.x < (b.x + b.radius * 2) && (a.x + a.width) > (b.x - b.radius);
+    bool collisionY = a.y < (b.y + b.radius * 2) && (a.y + a.height) > (b.y - b.radius);
+    return collisionX && collisionY;
+}
+
+void DrawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
+    for (int w = 0; w < radius * 2; w++) {
+        for (int h = 0; h < radius * 2; h++) {
+            int dx = radius - w; // distancia horizontal
+            int dy = radius - h; // distancia vertical
+            if ((dx * dx + dy * dy) <= (radius * radius)) {
+                SDL_RenderDrawPoint(renderer, centerX + dx, centerY + dy);
+            }
+        }
+    }
+}
+
+void Setup(SDL_Renderer*& renderer) {
+    printf("Setup called\n");
+}
+
+void Update() {
+    // Mover el rectángulo
+    rectangle.x += rectangle.dx;
+    rectangle.y += rectangle.dy;
+
+    // Mover el círculo
+    circle.x += circle.dx;
+    circle.y += circle.dy;
+
+    // Rebote contra los bordes de la pantalla para el rectángulo
+    if (rectangle.x < 0 || rectangle.x + rectangle.width > 800) {
+        rectangle.dx = -rectangle.dx; // Invertir dirección
+    }
+    if (rectangle.y < 0 || rectangle.y + rectangle.height > 600) {
+        rectangle.dy = -rectangle.dy; // Invertir dirección
+    }
+
+    // Rebote contra los bordes de la pantalla para el círculo
+    if (circle.x < 0 || circle.x > 800 - circle.radius * 2) {
+        circle.dx = -circle.dx; // Invertir dirección
+    }
+    if (circle.y < 0 || circle.y > 600 - circle.radius * 2) {
+        circle.dy = -circle.dy; // Invertir dirección
+    }
+
+    // Detección de colisiones entre el rectángulo y el círculo
+    if (CheckCollision(rectangle, circle)) {
+        rectangle.dx = -rectangle.dx; // Invertir dirección del rectángulo
+        circle.dx = -circle.dx;       // Invertir dirección del círculo
+    }
+}
+
+void Render(SDL_Renderer* renderer) {
+    // Limpiar la pantalla
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color negro
+    SDL_RenderClear(renderer);
+
+    // Dibuja un rectángulo
+    SDL_SetRenderDrawColor(renderer, rectangle.r, rectangle.g, rectangle.b, 255); // Color del rectángulo
+    SDL_Rect rect = { rectangle.x, rectangle.y, rectangle.width, rectangle.height };
+    SDL_RenderFillRect(renderer, &rect); // Rellenar el rectángulo
+
+    // Dibuja un círculo
+    SDL_SetRenderDrawColor(renderer, circle.r, circle.g, circle.b, 255); // Color azul
+    DrawCircle(renderer, circle.x, circle.y, circle.radius); // Círculo en (x, 300)
+
+    // Presentar la pantalla
+    SDL_RenderPresent(renderer);
+}
+
+int main(int argc, char* argv[]) {
+    // Inicializar SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("No se pudo inicializar SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Crear ventana
+    SDL_Window* window = SDL_CreateWindow("Rebote de Figuras", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
+    if (!window) {
+        printf("No se pudo crear la ventana: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    // Crear renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        printf("No se pudo crear el renderer: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    Setup(renderer);
+
+    while (true) {
+        Update();
+        Render(renderer);
+
+        // Comprobar si se ha presionado una tecla para salir
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                goto exit; // Salir del bucle si se cierra la ventana
+            }
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+
+exit:
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit(); // Cerrar SDL
+    return 0;
+}

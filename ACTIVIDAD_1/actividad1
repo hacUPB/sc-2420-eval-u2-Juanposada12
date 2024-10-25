@@ -1,0 +1,33 @@
+#include <iostream>
+#include <cstdio> // Para printf
+#include <chrono>
+#include <thread>
+
+void Setup() {
+    printf("Setup called\n");
+    // Inicialización del juego, carga de recursos, etc.
+}
+
+void Update() {
+    printf("Update called\n");
+    // Lógica del juego, actualización de estados, etc.
+}
+
+void Render() {
+    printf("Render called\n");
+    // Dibujo en pantalla, visualización de gráficos, etc.
+}
+
+int main() {
+    Setup(); // Llamada inicial para configurar el juego
+
+    while (true) {
+        Update(); // Actualizar la lógica del juego
+        Render(); // Renderizar la escena
+
+        // Controlar el tiempo de ejecución para mantener una tasa de frames constante
+        std::this_thread::sleep_for(std::chrono::milliseconds(16)); // Aproximadamente 60 FPS
+    }
+
+    return 0;
+}
