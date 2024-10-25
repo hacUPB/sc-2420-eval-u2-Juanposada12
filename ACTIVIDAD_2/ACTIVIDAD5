@@ -1,0 +1,132 @@
+#include <iostream>
+#include <cstdio>
+#include <chrono>
+#include <thread>
+#include <SDL.h>
+
+void Setup(SDL_Renderer*& renderer) {
+    printf("Setup called\n");
+}
+
+void Update(int& posX, int& posY, int speed, bool& dragging, int mouseX, int mouseY) {
+    // Mover la figura con las teclas W, A, S, D (opcional)
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    if (state[SDL_SCANCODE_W]) {
+        posY -= speed; // Mover hacia arriba
+    }
+    if (state[SDL_SCANCODE_S]) {
+        posY += speed; // Mover hacia abajo
+    }
+    if (state[SDL_SCANCODE_A]) {
+        posX -= speed; // Mover hacia la izquierda
+    }
+    if (state[SDL_SCANCODE_D]) {
+        posX += speed; // Mover hacia la derecha
+    }
+
+    // Si se está arrastrando la figura, actualiza su posición
+    if (dragging) {
+        posX = mouseX - 25; // Centrar el rectángulo (ancho/2)
+        posY = mouseY - 25; // Centrar el rectángulo (alto/2)
+    }
+}
+
+void Render(SDL_Renderer* renderer, int posX, int posY, SDL_Color color) {
+    // Limpiar la pantalla
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color negro
+    SDL_RenderClear(renderer);
+    
+    // Dibujar un rectángulo
+    SDL_Rect rect;
+    rect.x = posX;
+    rect.y = posY;
+    rect.w = 50;  // Ancho del rectángulo
+    rect.h = 50;  // Alto del rectángulo
+
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a); // Color del rectángulo
+    SDL_RenderFillRect(renderer, &rect);
+    
+    // Presentar la pantalla
+    SDL_RenderPresent(renderer);
+}
+
+int main(int argc, char* argv[]) {
+    // Inicializar SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("No se pudo inicializar SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Crear ventana
+    SDL_Window* window = SDL_CreateWindow("Interacción con el Mouse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
+    if (!window) {
+        printf("No se pudo crear la ventana: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    // Crear renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        printf("No se pudo crear el renderer: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    Setup(renderer);
+
+    int posX = 375; // Posición inicial en X
+    int posY = 275; // Posición inicial en Y
+    int speed = 5;  // Velocidad de movimiento
+    SDL_Color rectColor = {255, 0, 0, 255}; // Color rojo
+    bool dragging = false; // Variable para saber si se está arrastrando la figura
+
+    bool running = true;
+    while (running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false; // Salir del bucle si se cierra la ventana
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                // Detección de clic en el rectángulo
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    if (event.button.x >= posX && event.button.x <= posX + 50 &&
+                        event.button.y >= posY && event.button.y <= posY + 50) {
+                        dragging = true; // Comenzar a arrastrar
+                        rectColor = {0, 255, 0, 255}; // Cambiar color a verde al seleccionar
+                    }
+                }
+            }
+            else if (event.type == SDL_MOUSEBUTTONUP) {
+                // Dejar de arrastrar
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    dragging = false;
+                    rectColor = {255, 0, 0, 255}; // Volver al color rojo
+                }
+            }
+        }
+
+        // Obtener posición del mouse
+        int mouseX, mouseY;
+        SDL_GetMouseState(&mouseX, &mouseY);
+
+        // Actualizar posición
+        Update(posX, posY, speed, dragging, mouseX, mouseY);
+
+        // Establecer límites para que el rectángulo no salga de la pantalla
+        if (posX < 0) posX = 0; // Límite izquierdo
+        if (posX > 750) posX = 750; // Límite derecho
+        if (posY < 0) posY = 0; // Límite superior
+        if (posY > 550) posY = 550; // Límite inferior
+
+        Render(renderer, posX, posY, rectColor);
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit(); // Cerrar SDL
+    return 0;
+}
