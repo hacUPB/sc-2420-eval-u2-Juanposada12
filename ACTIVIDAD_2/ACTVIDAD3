@@ -48,4 +48,35 @@ int main(int argc, char* argv[]) {
     Setup(renderer);
 
     bool running = true;
-    while (runn
+    while (running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false; // Salir del bucle si se cierra la ventana
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                // Detectar clic del mouse
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    printf("Clic izquierdo en (x: %d, y: %d)\n", event.button.x, event.button.y);
+                }
+                else if (event.button.button == SDL_BUTTON_RIGHT) {
+                    printf("Clic derecho en (x: %d, y: %d)\n", event.button.x, event.button.y);
+                }
+            }
+            else if (event.type == SDL_MOUSEMOTION) {
+                // Detectar movimiento del mouse
+                printf("Movimiento del mouse a (x: %d, y: %d)\n", event.motion.x, event.motion.y);
+            }
+        }
+
+        Update();
+        Render(renderer);
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit(); // Cerrar SDL
+    return 0;
+}
+
