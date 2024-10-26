@@ -1,0 +1,49 @@
+#include <iostream>
+#include <cstdio>
+#include <chrono>
+#include <thread>
+#include <SDL.h>
+
+void Setup() {
+    printf("Setup called\n");
+}
+
+void Update() {
+    printf("Update called\n");
+}
+
+void Render() {
+    printf("Render called\n");
+}
+
+int main(int argc, char* argv[]) {
+    // Inicializar SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("No se pudo inicializar SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    Setup();
+
+    while (true) {
+        Uint32 startUpdate = SDL_GetTicks(); // Tiempo antes de Update
+        Update();
+        Uint32 endUpdate = SDL_GetTicks(); // Tiempo después de Update
+        printf("Tiempo de Update: %u ms\n", endUpdate - startUpdate);
+
+        Uint32 startRender = SDL_GetTicks(); // Tiempo antes de Render
+        Render();
+        Uint32 endRender = SDL_GetTicks(); // Tiempo después de Render
+        printf("Tiempo de Render: %u ms\n", endRender - startRender);
+
+        // Comprobar si se ha presionado una tecla para salir
+        if (SDL_PollEvent(NULL)) { // Reemplaza esto con tu lógica de entrada
+            break; // Salir del bucle si se detecta un evento
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+
+    SDL_Quit(); // Cerrar SDL
+    return 0;
+}

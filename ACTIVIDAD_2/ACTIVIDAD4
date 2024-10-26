@@ -1,0 +1,103 @@
+#include <iostream>
+#include <cstdio>
+#include <chrono>
+#include <thread>
+#include <SDL.h>
+
+void Setup(SDL_Renderer*& renderer) {
+    printf("Setup called\n");
+}
+
+void Update(int& posX, int& posY, int speed) {
+    // Mover la figura con las teclas W, A, S, D
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    if (state[SDL_SCANCODE_W]) {
+        posY -= speed; // Mover hacia arriba
+    }
+    if (state[SDL_SCANCODE_S]) {
+        posY += speed; // Mover hacia abajo
+    }
+    if (state[SDL_SCANCODE_A]) {
+        posX -= speed; // Mover hacia la izquierda
+    }
+    if (state[SDL_SCANCODE_D]) {
+        posX += speed; // Mover hacia la derecha
+    }
+}
+
+void Render(SDL_Renderer* renderer, int posX, int posY) {
+    // Limpiar la pantalla
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color negro
+    SDL_RenderClear(renderer);
+
+    // Dibujar un rectángulo
+    SDL_Rect rect;
+    rect.x = posX;
+    rect.y = posY;
+    rect.w = 50;  // Ancho del rectángulo
+    rect.h = 50;  // Alto del rectángulo
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Color rojo
+    SDL_RenderFillRect(renderer, &rect);
+    
+    // Presentar la pantalla
+    SDL_RenderPresent(renderer);
+}
+
+int main(int argc, char* argv[]) {
+    // Inicializar SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("No se pudo inicializar SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Crear ventana
+    SDL_Window* window = SDL_CreateWindow("Interacción con Teclado", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
+    if (!window) {
+        printf("No se pudo crear la ventana: %s\n", SDL_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    // Crear renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        printf("No se pudo crear el renderer: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    Setup(renderer);
+
+    int posX = 375; // Posición inicial en X
+    int posY = 275; // Posición inicial en Y
+    int speed = 5;  // Velocidad de movimiento
+
+    bool running = true;
+    while (running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false; // Salir del bucle si se cierra la ventana
+            }
+        }
+
+        // Actualizar posición
+        Update(posX, posY, speed);
+
+        // Establecer límites para que el rectángulo no salga de la pantalla
+        if (posX < 0) posX = 0; // Límite izquierdo
+        if (posX > 750) posX = 750; // Límite derecho (800 - ancho del rectángulo)
+        if (posY < 0) posY = 0; // Límite superior
+        if (posY > 550) posY = 550; // Límite inferior (600 - alto del rectángulo)
+
+        Render(renderer, posX, posY);
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit(); // Cerrar SDL
+    return 0;
+}
