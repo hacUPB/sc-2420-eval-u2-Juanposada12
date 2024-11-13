@@ -83,3 +83,30 @@ int main(int argc, char* argv[]) {
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+//Este código muestra cómo manejar eventos de teclado en un bucle de juego utilizando SDL. El objetivo principal es detectar cuando se presionan teclas específicas, como W, A, S, y D, y responder a esos eventos.
+
+//Estructura del código:
+//Inicialización:
+
+//Se inicializa SDL y se crea una ventana y un renderer para manejar la salida gráfica.
+//Manejo de Eventos:
+
+//En el bucle principal del juego, se usa SDL_PollEvent() para obtener los eventos.
+//Se verifica si el evento es SDL_KEYDOWN (tecla presionada).
+//Según la tecla presionada (W, A, S, o D), se imprime un mensaje en la consola.
+//Actualización y Renderizado:
+
+//La función Update() está vacía, pero puedes agregar lógica de juego aquí (por ejemplo, mover objetos).
+//En Render(), la pantalla se limpia con color negro y luego se presenta.
+//Bucle de Juego:
+
+//El bucle continúa hasta que el usuario cierra la ventana (SDL_QUIT).
+//Se actualiza el juego y se renderiza la pantalla en cada ciclo.
+//¿Qué hace este código?
+//Detecta cuando se presionan las teclas W, A, S, y D y muestra un mensaje en la consola para cada tecla.
+//Usa SDL_PollEvent() para manejar eventos de teclado y SDL_KEYDOWN para detectar las pulsaciones de teclas.
+//Posibles Extensiones:
+//Mover figuras: Puedes usar las teclas W, A, S, D para mover un objeto en la pantalla (por ejemplo, un rectángulo).
+//Detectar más teclas: Se pueden agregar más teclas o realizar combinaciones de teclas.
+//Eventos de tecla liberada: Usar SDL_KEYUP para detectar cuando una tecla se deja de presionar.
+//Este código es una base para aprender a manejar entradas de teclado en un juego o aplicación usando SDL.
