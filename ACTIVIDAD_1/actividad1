@@ -31,3 +31,11 @@ int main() {
 
     return 0;
 }
+//Este código configura y ejecuta un bucle básico de juego con tres funciones clave:
+
+//Setup(): Inicialización del juego.
+//Update(): Actualización de la lógica del juego.
+//Render(): Renderización de los gráficos.
+//El bucle while(true) mantiene el juego en ejecución continua, actualizando y renderizando en cada iteración, con un pequeño retraso entre cada fotograma para mantener la tasa de 60 FPS.
+
+//Este esqueleto podría expandirse para incluir controles de entrada, más complejidad en la lógica del juego y la integración con una librería gráfica para hacer que se vea más interesante.
