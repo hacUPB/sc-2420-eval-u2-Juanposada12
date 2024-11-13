@@ -116,3 +116,4 @@ exit:
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+//Este programa crea una ventana en la que se mueven un rectángulo, una línea y un círculo de izquierda a derecha. Cuando las figuras se salen de la pantalla, su posición se reinicia a la izquierda. Se utilizan funciones básicas de SDL2 para crear la ventana, el renderer, y para dibujar las figuras en la pantalla.
