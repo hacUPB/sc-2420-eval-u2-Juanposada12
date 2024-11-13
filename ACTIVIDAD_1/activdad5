@@ -133,3 +133,4 @@ exit:
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+//Este programa crea una ventana de 800x600 píxeles en la que tres figuras (un rectángulo, una línea y un círculo) son animadas. Las animaciones incluyen el cambio de tamaño del rectángulo, la rotación del mismo (aunque no se refleja visualmente en el código actual), el cambio de color de las figuras, el movimiento de la línea y el movimiento del círculo, con la reinicialización de la posición del círculo al salir de la pantalla.
