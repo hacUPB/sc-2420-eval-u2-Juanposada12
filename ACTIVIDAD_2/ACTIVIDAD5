@@ -130,3 +130,18 @@ int main(int argc, char* argv[]) {
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+/* 
+    Este código permite mover un rectángulo en la pantalla utilizando el mouse o las teclas W, A, S, D.
+    Funcionalidades:
+    - Se puede mover el rectángulo arrastrándolo con el mouse (clic izquierdo).
+    - También se puede mover el rectángulo usando las teclas W, A, S y D.
+    - Cuando el rectángulo es arrastrado, su color cambia de rojo a verde.
+    - El rectángulo está restringido a no salir de los bordes de la ventana (800x600).
+    - El bucle de juego continuará hasta que se cierre la ventana (evento SDL_QUIT).
+    
+    Posibles Extensiones:
+    - Añadir más objetos para mover, o incluso cambiar la forma del rectángulo.
+    - Agregar interacciones más complejas con el mouse, como el cambio de tamaño.
+    - Implementar efectos visuales o sonidos al interactuar con el objeto.
+
+*/
