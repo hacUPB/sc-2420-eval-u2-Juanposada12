@@ -101,3 +101,20 @@ int main(int argc, char* argv[]) {
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+/* 
+    Este código maneja la interacción con el teclado para mover un rectángulo en la pantalla
+    usando las teclas W, A, S y D dentro de un bucle de juego utilizando SDL.
+
+    Funcionalidades:
+    - Inicializa SDL, crea una ventana y un renderer.
+    - Detecta las teclas W, A, S y D para mover un rectángulo por la pantalla.
+    - El rectángulo se mueve a la velocidad definida por la variable `speed`.
+    - El movimiento está restringido para que el rectángulo no salga de los bordes de la ventana.
+    - El bucle de juego se ejecuta hasta que se cierra la ventana (evento SDL_QUIT).
+    - La pantalla se limpia y el rectángulo se dibuja en cada ciclo.
+
+    Posibles Extensiones:
+    - Añadir más objetos que se muevan con diferentes teclas o comportamientos.
+    - Permitir que el rectángulo cambie de tamaño o color con otras teclas.
+    - Añadir más interactividad, como detectar colisiones con el borde o con otros objetos.
+*/
