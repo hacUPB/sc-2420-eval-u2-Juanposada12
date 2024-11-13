@@ -79,4 +79,18 @@ int main(int argc, char* argv[]) {
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
-
+/* 
+    Este código maneja eventos del mouse dentro de un bucle de juego utilizando SDL.
+    
+    Funcionalidades:
+    - Inicialización de SDL, creación de una ventana y un renderer.
+    - Manejo de eventos del mouse:
+        - Detecta clics izquierdo y derecho del mouse, imprimiendo las coordenadas de los clics.
+        - Detecta el movimiento del mouse, imprimiendo las coordenadas del movimiento.
+    - El bucle de juego sigue ejecutándose hasta que se cierra la ventana (evento SDL_QUIT).
+    - La pantalla se limpia y se renderiza en cada ciclo.
+    
+    Posibles Extensiones:
+    - Realizar acciones específicas cuando el mouse interactúa con ciertos objetos en la pantalla.
+    - Agregar más eventos del mouse, como los botones de desplazamiento (scroll).
+*/
