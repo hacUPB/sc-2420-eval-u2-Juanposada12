@@ -94,3 +94,8 @@ exit:
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+//Este código crea una ventana SDL2 donde se dibujan figuras geométricas (un rectángulo, una línea y un círculo). El bucle principal actualiza y renderiza las figuras en la pantalla a aproximadamente 60 FPS, manejando eventos como el cierre de la ventana. También se utiliza un algoritmo para dibujar un círculo pixel por pixel.
+
+
+
+
