@@ -140,3 +140,4 @@ exit:
     SDL_Quit(); // Cerrar SDL
     return 0;
 }
+//Este código es una implementación sólida para un juego sencillo de rebote con detección de colisiones. El código maneja de manera efectiva el movimiento de las figuras, el rebote contra los bordes de la ventana y la colisión entre ellas. Puedes mejorarlo añadiendo más características, como la rotación y una detección de colisiones más avanzada.
